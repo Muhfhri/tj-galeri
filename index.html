@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ Gallery Pro - Persistence Mode</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        :root {
+            --m3-primary: #005ac1;
+            --m3-surface: #fdfbff;
+            --m3-on-surface: #1b1b1f;
+            --m3-surface-container: #f3f3f7;
+            --m3-on-surface-variant: #44474e;
+            --m3-outline: #74777f;
+            --m3-primary-container: #d8e2ff;
+            --m3-on-primary-container: #001a41;
+        }
+
+        [data-theme="dark"] {
+            --m3-primary: #adc6ff;
+            --m3-surface: #111318;
+            --m3-on-surface: #e2e2e6;
+            --m3-surface-container: #1e1f25;
+            --m3-on-surface-variant: #c4c6d0;
+            --m3-outline: #8e9099;
+            --m3-primary-container: #004494;
+            --m3-on-primary-container: #d8e2ff;
+        }
+
+        body {
+            font-family: 'PT Sans', sans-serif;
+            background-color: var(--m3-surface);
+            color: var(--m3-on-surface);
+            transition: background 0.4s ease, color 0.4s ease;
+            min-height: 100vh;
+        }
+
+        .fab-theme {
+            position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+            width: 60px; height: 60px; border-radius: 18px; border: none;
+            background: var(--m3-primary); color: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .m3-panel {
+            background: var(--m3-surface-container);
+            border-radius: 32px; padding: 24px; margin-bottom: 30px;
+        }
+
+        .search-input-group {
+            background: var(--m3-surface); border-radius: 20px;
+            padding: 14px 22px; display: flex; align-items: center;
+            border: 2px solid transparent; transition: 0.3s;
+        }
+        .search-input-group:focus-within { border-color: var(--m3-primary); }
+        .search-input-group input {
+            background: transparent; border: none; outline: none;
+            color: var(--m3-on-surface); width: 100%; margin-left: 12px;
+            font-weight: 700;
+        }
+
+        .filter-label {
+            font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+            color: var(--m3-primary); margin: 20px 0 10px 5px; letter-spacing: 1px;
+        }
+
+        .chips-wrapper { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .m3-chip {
+            padding: 10px 20px; border-radius: 14px;
+            border: 1px solid var(--m3-outline); background: transparent;
+            color: var(--m3-on-surface); font-weight: 700; font-size: 0.85rem;
+            transition: 0.2s; cursor: pointer;
+        }
+        .m3-chip.active { background: var(--m3-primary); color: white; border-color: var(--m3-primary); }
+
+        .bus-card {
+            background: var(--m3-surface-container); border-radius: 28px;
+            padding: 16px; height: 100%; transition: 0.3s; border: 1px solid transparent;
+        }
+        .bus-card:hover { transform: translateY(-5px); border-color: var(--m3-primary); }
+
+        .bus-img-container { border-radius: 20px; overflow: hidden; aspect-ratio: 16/10; cursor: zoom-in; }
+        .bus-img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .bus-id { font-weight: 800; font-size: 1.3rem; color: var(--m3-primary); margin: 15px 0 5px 0; }
+        .bus-desc { font-weight: 700; opacity: 0.8; font-size: 0.95rem; margin-bottom: 15px; }
+
+        .spec-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .spec-pill { background: var(--m3-surface); padding: 8px 12px; border-radius: 12px; }
+        .spec-pill label { display: block; font-size: 0.65rem; font-weight: 800; opacity: 0.6; text-transform: uppercase; }
+        .spec-pill span { font-size: 0.85rem; font-weight: 700; }
+
+        .btn-dl {
+            width: 100%; margin-top: 15px; padding: 12px; border-radius: 14px;
+            border: none; background: var(--m3-primary-container);
+            color: var(--m3-on-primary-container); font-weight: 800; font-size: 0.85rem;
+        }
+
+        /* Lightbox */
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; z-index: 9999; flex-direction: column;
+        }
+        .lb-content { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        #zoom-img { transition: transform 0.2s ease; max-width: 90%; border-radius: 12px; }
+        
+        .reset-btn {
+            font-size: 0.75rem; font-weight: 800; color: var(--m3-on-surface-variant);
+            background: none; border: 1px solid var(--m3-outline);
+            border-radius: 10px; padding: 4px 10px; margin-left: 10px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="fab-theme" onclick="toggleTheme()" id="theme-btn"></button>
+
+    <div class="container py-5">
+        <header class="mb-4 d-flex justify-content-between align-items-end">
+            <div>
+                <h1 class="fw-800 display-4 mb-0">TiJe<span class="text-primary">Galeri</span></h1>
+                <p class="fw-700 mb-0">by <a href="https://muhfhri.github.io/jakmove"><img src="https://muhfhri.github.io/jakmove/css/image/jakmove.png" width="100"></a></p>
+            </div>
+            <button class="reset-btn" onclick="resetFilters()">Reset Semua Filter</button>
+        </header>
+
+        <section class="m3-panel shadow-sm">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="search-input-group">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                        <input type="text" id="mainSearch" placeholder="Cari nomor bus, karoseri, tipe...">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <select class="form-select border-0 shadow-sm fw-700" style="border-radius: 18px; padding: 14px;" id="sortMode">
+                        <option value="asc">Urutan: A - Z</option>
+                        <option value="desc">Urutan: Z - A</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-label">Tipe Bus / Deck</div>
+            <div id="type-chips" class="chips-wrapper"></div>
+
+            <div class="filter-label">Kategori Unit</div>
+            <div id="cat-chips" class="chips-wrapper"></div>
+
+            <div class="filter-label">Operator</div>
+            <div id="op-chips" class="chips-wrapper"></div>
+
+            <div class="filter-label">Bahan Bakar</div>
+            <div id="fuel-chips" class="chips-wrapper"></div>
+        </section>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    <div id="bus-count" class="fw-600 opacity-75"></div>
+</div>
+
+        <div id="gallery-grid" class="row g-4"></div>
+        <div id="empty-msg" class="text-center py-5 d-none"><h2 class="fw-800 opacity-25">TIDAK ADA DATA</h2></div>
+
+    </div>
+
+    <div id="lightbox">
+        <div class="p-3 text-end"><span style="font-size: 3rem; color: white; cursor: pointer;" onclick="closeLightbox()">&times;</span></div>
+        <div class="lb-content"><img id="zoom-img" src=""></div>
+        <div class="p-4 d-flex justify-content-center gap-3">
+            <button class="btn btn-light fw-800 rounded-pill px-4" onclick="zoomAction(-0.3)">−</button>
+            <button class="btn btn-light fw-800 rounded-pill px-4" onclick="zoomAction(0.3)">+</button>
+        </div>
+    </div>
+
+<script src="databus.js"></script>
+</body>
+</html>
