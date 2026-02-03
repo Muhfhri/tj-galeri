@@ -10,7 +10,7 @@
             { id: "DMR-250287", operator: "Perum DAMRI", category: "BYD", fuel: "Listrik", karoseri: "Laksana & VKTR", type: "High Floor", color: "Biru Putih", image: "images/byd-dmr-2.jpeg", desc: "VKTR BYD Tidar HF-12" }
             , //Skywell
             { id: "DMR-230099", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "images/skywell-dmr-11.jpeg", desc: "Skywell NJL6129BEV" },
-            { id: "DMR-230104", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "images/skywell-dmr-12.jpeg", desc: "Skywell NJL6129BEV" },
+            { id: "DMR-230104", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "images/skywell-dmr-12.jpg", desc: "Skywell NJL6129BEV" },
             { id: "DMR-230114", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "images/skywell-dmr-1.jpeg", desc: "Skywell NJL6129BEV" },
             { id: "DMR-230121", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "images/skywell-dmr-2.jpeg", desc: "Skywell NJL6129BEV" },
             { id: "DMR-230122", operator: "Perum DAMRI", category: "Skywell", fuel: "Listrik", karoseri: "Completely Built Up", type: "Low Entry", color: "Putih Jingga", image: "/images/skywell-dmr-3.jpg", desc: "Skywell NJL6129BEV" },
