@@ -84,6 +84,7 @@
         .bus-card {
             background: var(--m3-surface-container); border-radius: 28px;
             padding: 16px; height: 100%; transition: 0.3s; border: 1px solid transparent;
+            overflow: hidden; display: flex; flex-direction: column;
         }
         .bus-card:hover { transform: translateY(-5px); border-color: var(--m3-primary); }
 
@@ -102,21 +103,96 @@
             width: 100%; margin-top: 15px; padding: 12px; border-radius: 14px;
             border: none; background: var(--m3-primary-container);
             color: var(--m3-on-primary-container); font-weight: 800; font-size: 0.85rem;
+            position: relative; z-index: 2; cursor: pointer;
         }
+
+        .slide-counter {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            z-index: 3;
+            font-size: 0.85rem;
+            pointer-events: none; /* Jangan tangkap klik */
+        }
+
+        .lb-counter {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            z-index: 10002;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+
+        .lb-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            border: none;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10001;
+            cursor: pointer;
+            font-size: 1.6rem;
+            line-height: 1;
+            padding: 0;
+            display: none; /* ditampilkan via JS bila perlu */
+        }
+        .lb-arrow.left { left: 18px; }
+        .lb-arrow.right { right: 18px; }
 
         /* Lightbox */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); display: none; z-index: 9999; flex-direction: column;
         }
-        .lb-content { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        #zoom-img { transition: transform 0.2s ease; max-width: 90%; border-radius: 12px; }
+        .lb-content { flex-grow: 1; overflow: hidden; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        #zoom-img { transition: transform 0.2s ease; max-width: 90%; max-height: 90vh; border-radius: 12px; transform-origin: center center; will-change: transform; }
         
         .reset-btn {
             font-size: 0.75rem; font-weight: 800; color: var(--m3-on-surface-variant);
             background: none; border: 1px solid var(--m3-outline);
             border-radius: 10px; padding: 4px 10px; margin-left: 10px; cursor: pointer;
         }
+.bus-img-container {
+    position: relative;
+    overflow: hidden;
+    height: clamp(220px, 24vw, 420px); /* responsive height for larger screens */
+    border-radius: 20px;
+}
+
+@media (min-width: 1200px) {
+    .bus-img-container { height: 320px; }
+}
+.bus-img-container img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .4s ease;
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+
+.bus-img-container img.active {
+    opacity: 1;
+    z-index: 1;
+}
     </style>
 </head>
 <body>
@@ -170,10 +246,19 @@
     </div>
 
     <div id="lightbox">
-        <div class="p-3 text-end"><span style="font-size: 3rem; color: white; cursor: pointer;" onclick="closeLightbox()">&times;</span></div>
-        <div class="lb-content"><img id="zoom-img" src=""></div>
+        <div class="p-3 text-end">
+            <div class="lb-counter" style="display:none"></div>
+            <span style="font-size: 3rem; color: white; cursor: pointer;" onclick="closeLightbox()">&times;</span>
+        </div>
+        <div class="lb-content">
+            <button class="lb-arrow left" onclick="lbChange(-1)">‹</button>
+            <img id="zoom-img" src="">
+            <button class="lb-arrow right" onclick="lbChange(1)">›</button>
+        </div>
         <div class="p-4 d-flex justify-content-center gap-3">
             <button class="btn btn-light fw-800 rounded-pill px-4" onclick="zoomAction(-0.3)">−</button>
+            <button id="lb-prev" class="btn btn-light fw-800 rounded-pill px-4 d-none" onclick="lbChange(-1)">‹</button>
+            <button id="lb-next" class="btn btn-light fw-800 rounded-pill px-4 d-none" onclick="lbChange(1)">›</button>
             <button class="btn btn-light fw-800 rounded-pill px-4" onclick="zoomAction(0.3)">+</button>
         </div>
     </div>
